@@ -62,7 +62,7 @@ tipo.probs["B",]
 tipo.probs["C",]
 ```
 
-La función `base.predominante` siguiente genera una cadena de longitud 1000 del `tipo` entrado como argumento y calcula su base de frecuencia máxima (si hay empate escoge una al azar):
+La función `base.predominante` siguiente genera una cadena de longitud 1000 del `tipo` entrado como argumento y calcula su base de frecuencia máxima (si hay empate en el máximo, escoge una al azar):
 
 ```{r}
 base.predominante= function(tipo,tipo.probs)

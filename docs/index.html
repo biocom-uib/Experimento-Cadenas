@@ -235,7 +235,7 @@ tipo.probs</code></pre>
 <pre class="r"><code>tipo.probs[&quot;C&quot;,]</code></pre>
 <pre><code>##    p.a  p.c  p.g  p.t
 ## C 0.24 0.25 0.26 0.25</code></pre>
-<p>La función <code>base.predominante</code> siguiente genera una cadena de longitud 1000 del <code>tipo</code> entrado como argumento y calcula su base de frecuencia máxima (si hay empate escoge una al azar):</p>
+<p>La función <code>base.predominante</code> siguiente genera una cadena de longitud 1000 del <code>tipo</code> entrado como argumento y calcula su base de frecuencia máxima (si hay empate en el máximo, escoge una al azar):</p>
 <pre class="r"><code>base.predominante= function(tipo,tipo.probs)
   {TT=table(sample(bases,size=1000,replace=TRUE,prob=tipo.probs[tipo,])) 
   aux=names(which(TT==max(TT)))
