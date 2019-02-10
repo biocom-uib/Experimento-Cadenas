@@ -1,6 +1,6 @@
 # Experimento-Cadenas
 
-Información sobre una muestra sintética de 10000 cadenas de bases "a", "c", "g" y "t" para usar en la lección sobre contrastes de independencia y homogeneidad del testo AprenderR. El fichero LeemeGeneracionDatos.Rmd ha generado estas tablas y explica qué contienen. El resultado html de compilar este fichero R Markdown se puede leer aquí.
+Información sobre una muestra sintética de 10000 cadenas de bases "a", "c", "g" y "t" para usar en la lección sobre contrastes de independencia y homogeneidad del testo AprenderR. El fichero LeemeGeneracionDatos.Rmd ha generado estas tablas y explica qué contienen. El resultado html de compilar este fichero R Markdown se puede leer [aquí](http://biocom-uib.github.io/Experimento-Cadenas).
 
 Las direcciones de las tablas de datos que tenéis que usar para cargarlas en R son:
 
