@@ -1,5 +1,5 @@
 ---
-title: "Generación de muestras sintéticas para pruebas de homogeneidad"
+title: "Generación de muestras sintéticas para pruebas de independencia y homogeneidad"
 author: ""
 date: ""
 output: 
@@ -18,11 +18,11 @@ set.seed(31415)
 ```
 
 
-Vamos a producir cadenas de tres tipos distintos:  "A", "B" y  "C".  Estos tipos van a distinguirse por sus probabilidades de aparición de las cuatro bases:
+Vamos a producir cadenas de tres tipos distintos:  "A", "B" y  "C".  Estos tipos van a caracterizarse por sus probabilidades de aparición de las cuatro bases  "a", "c", "g" y "t":
 
-* En las cadenas de tipo A las frecuencias son 0.25 para las cuatro bases
-* En las cadenas de  tipo B las frecuencias son 0.26, 0.26, 0.24 y 0.24,  para "a", "c", "g" y "t", respectivamente.
-* En las cadenas de  tipo C las frecuencias son 0.24, 0.25,0.26,0.25, y  0.25,  para "a", "c", "g" y "t", respectivamente.
+* En las cadenas de tipo A estas probabilidades son 0.25 para cada base.
+* En las cadenas de  tipo B estas probabilidades son 0.26, 0.26, 0.24 y 0.24,  respectivamente.
+* En las cadenas de  tipo C estas probabilidades son 0.24, 0.25,0.26 y  0.25,   respectivamente.
 
 Vamos a imponer que los tipos de cadena  "A", "B" y  "C" se den con probabilidades  0.4, 0.3 y 0.3 respectivamente. Así pues, generaremos nuestra muestra de cadenas al azar teniendo en cuenta estas probabilidades.
 
@@ -38,13 +38,14 @@ tipo=sample(x=c("A","B","C"),size=10000,replace=TRUE,prob=c(0.4,0.3,0.3))
 
 Demos un vistazo al vector de tipos de cadenas que hemos generado:
 ```{r}
-head(tipo)
 str(tipo)
+head(tipo)
 table(tipo)
 ```
 
-Ahora especificamos las probabilidades de las bases que definirán las cadenas de cata tipo:
+Las frecuencias de los tres tipos han quedado muy cerca de las esperadas.
 
+Ahora especificamos las probabilidades de las bases que definirán las cadenas de cata tipo:
 ```{r}
 bases=c("a","c","g","t")
 tipo.probs=data.frame(
@@ -61,12 +62,13 @@ tipo.probs["B",]
 tipo.probs["C",]
 ```
 
-La función `base.predominante` siguiente genera una cadena de longitud 1000 del `tipo` entrado como argumento y calcula su base de frecuencia máxima (si hay empate escoge la primera por orden alfabético):
+La función `base.predominante` siguiente genera una cadena de longitud 1000 del `tipo` entrado como argumento y calcula su base de frecuencia máxima (si hay empate escoge una al azar):
 
 ```{r}
 base.predominante= function(tipo,tipo.probs)
-  {aux=which.max(table(sample(bases,size=1000,replace=TRUE,prob=tipo.probs[tipo,])))
-   names(aux)[1]
+  {TT=table(sample(bases,size=1000,replace=TRUE,prob=tipo.probs[tipo,])) 
+  aux=names(which(TT==max(TT)))
+  sample(aux,1)
 }
 ```
 
@@ -87,7 +89,7 @@ Ahora generamos la muestra de pares (tipo de cadena, base predominante), aplican
 
 ```{r}
 muestra=data.frame(tipo)
-muestra$max.frec=unlist(lapply(muestra$tipo,FUN=base.predominante,tipo.probs))
+muestra$max.frec=sapply(muestra$tipo,FUN=base.predominante,tipo.probs)
 ```
 Demos un vistazo a la tabla de datos que hemos generado:
 
@@ -96,31 +98,20 @@ head(muestra)
 str(muestra)
 ```
 
-Finalmente, creamos los ficheros descargables:
+Finalmente, creamos los ficheros descargables en el directorio actual:
 
-* El fichero "MuestraTotalBases.txt" contiene la tabla de datos completa
-* Los ficheros "muestraTipoAbases.txt", "muestraTipoBbases.txt" y "muestraTipoCbases.txt" contienen, respectivamente, las filas de la muestra global que corresponden a cadenas de tipo "A", de tipo "B" y de tipo "C". 
+* El fichero "MuestraTotalBases.txt" contiene la tabla de datos completa.
+
+* Los ficheros "MuestraTipoAbases.txt", "MuestraTipoBbases.txt" y "MuestraTipoCbases.txt" contienen, respectivamente, las filas de la muestra global que corresponden a cadenas de tipo "A", de tipo "B" y de tipo "C". 
+
+En las filas de estos cuatro ficheros, las dos variables están separadas por una coma.
 
 
-```{r,eval=FALSE}
-write.table(muestra,file="MuestraTotalBases.txt",sep="\t",row.names=FALSE)
+```{r}
+write.table(muestra,file="MuestraTotalBases.txt",sep=",",row.names=FALSE)
 
-write.table(muestra[muestra$tipo=="A",],file="MuestraTipoAbases.txt",sep="\t",row.names=FALSE)
-write.table(muestra[muestra$tipo=="B",],file="MuestraTipoBbases.txt",sep="\t",row.names=FALSE)
-write.table(muestra[muestra$tipo=="C",],file="MuestraTipoCbases.txt",sep="\t",row.names=FALSE)
-```
-
-Podeis bajar estos ficheros de [este repositorio de GitHub.](https://github.com/biocom-uib/Experimento-Cadenas). Las direcciones de cada fichero para cargarlos en R son:
-
-* "MuestraTotalBases.txt": https://raw.githubusercontent.com/biocom-uib/Experimento-Cadenas/master/MuestraTotalBases.txt
-* "MuestraTipoAbases.txt": https://raw.githubusercontent.com/biocom-uib/Experimento-Cadenas/master/MuestraTipoAbases.txt
-* "MuestraTipoBbases.txt": https://raw.githubusercontent.com/biocom-uib/Experimento-Cadenas/master/MuestraTipoBbases.txt
-* "MuestraTipoCbases.txt": https://raw.githubusercontent.com/biocom-uib/Experimento-Cadenas/master/MuestraTipoCbases.txt
-
-Para cargarlos en una sesión de R, hay que entrar el url donde pone "aquí el url" (manteniendo las comillas) en el código siguiente (y dándoles un `Nombre` diferente a cada una): 
-
-```{r, eval=FALSE}
-library(RCurl)
-Nombre=read.csv(text=getURL("aquí el url"))
+write.table(muestra[muestra$tipo=="A",],file="MuestraTipoAbases.txt",sep=",",row.names=FALSE)
+write.table(muestra[muestra$tipo=="B",],file="MuestraTipoBbases.txt",sep=",",row.names=FALSE)
+write.table(muestra[muestra$tipo=="C",],file="MuestraTipoCbases.txt",sep=",",row.names=FALSE)
 ```
 
